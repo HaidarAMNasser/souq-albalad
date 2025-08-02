@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "372091562097",
+    "project_id": "souq-al-balad-bd78d",
+    "storage_bucket": "souq-al-balad-bd78d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:372091562097:android:86ff65ce678fb36888d3d0",
+        "android_client_info": {
+          "package_name": "com.souqalbalad.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeFQ3WHSq0ZJotOCDsFiqz-F9vs6aLlw0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

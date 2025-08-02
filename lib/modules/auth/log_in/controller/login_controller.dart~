@@ -1,0 +1,117 @@
+import 'package:debberly_app/global/common/signup_states.dart';
+import 'package:debberly_app/global/data/local/cache_helper.dart';
+import 'package:debberly_app/global/services/api_service.dart';
+import 'package:debberly_app/modules/auth/sign_up/view/screen/sign_up_screen.dart';
+import 'package:debberly_app/modules/navigation_bar/view/screen/main_layout_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class LoginController extends GetxController {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  final isLoading = false.obs;
+  final loginState = SignUpState.idle.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    final savedPhone = CacheHelper.getData(key: 'saved_phone');
+    if (savedPhone != null) emailController.text = savedPhone;
+  }
+
+  String? validatePhone(String? value) {
+    if (value == null || value.trim().isEmpty) return 'رقم الهاتف مطلوب';
+    if (value.replaceAll(RegExp(r'[^\d]'), '').length < 9) return 'رقم الهاتف قصير جداً';
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) return 'كلمة المرور مطلوبة';
+    if (value.length < 6) return 'كلمة المرور قصيرة جداً';
+    return null;
+  }
+
+  String _cleanPhoneNumber(String phone) {
+    String clean = phone.replaceAll(RegExp(r'[^\d]'), '');
+    if (clean.startsWith('0')) clean = clean.substring(1);
+    return '+963$clean';
+  }
+
+  Future<void> handleLogin() async {
+    if (!formKey.currentState!.validate()) return;
+
+    isLoading.value = true;
+    loginState.value = SignUpState.loading;
+
+    try {
+      final data = {
+        // 'phone': _cleanPhoneNumber(),
+        'phone': emailController.text,
+        'password': passwordController.text.trim(),
+      };
+
+      final result = await ApiService.post('/auth/login', data);
+
+      if (result['success'] == true) {
+        loginState.value = SignUpState.success;
+        showSuccess('تم تسجيل الدخول بنجاح');
+        saveUserData(result['data'] ?? {});
+        CacheHelper.saveData(key: 'saved_phone', value: emailController.text.trim());
+        Future.delayed(Duration(seconds: 1), () => Get.off(MainLayoutScreen()));
+      } else {
+        loginState.value = SignUpState.error;
+        String errorMessage = result['error']?.toString() ?? 'فشل في تسجيل الدخول';
+
+        if (errorMessage.contains('Phone must be')) {
+          errorMessage = 'تنسيق رقم الهاتف غير صحيح';
+        } else if (errorMessage.contains('Invalid credentials')) {
+          errorMessage = 'رقم الهاتف أو كلمة المرور غير صحيحة';
+        }
+
+        showError(errorMessage);
+      }
+    } catch (e) {
+      loginState.value = SignUpState.error;
+      showError('خطأ في الاتصال: ${e.toString()}');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void saveUserData(Map<String, dynamic> data) {
+    try {
+      if (data['access_token'] != null) {
+        CacheHelper.saveData(key: 'token', value: data['access_token'].toString());
+      }
+      if (data['user'] != null) {
+        CacheHelper.saveData(key: 'user_data', value: data['user']);
+      }
+    } catch (e) {
+      print('خطأ في حفظ البيانات: $e');
+    }
+  }
+
+  void showSuccess(String message) {
+    Get.snackbar('نجح', message, backgroundColor: Colors.green, colorText: Colors.white);
+  }
+
+  void showError(String message) {
+    Get.snackbar('خطأ', message, backgroundColor: Colors.red, colorText: Colors.white);
+  }
+
+  void navigateToRegister() => Get.offAll(() => const SignUpScreen());
+  void navigateToForgotPassword() => showError('صفحة استرداد كلمة المرور غير متاحة حالياً');
+
+  void fillDemoCredentials() {
+    emailController.text = '0485831569';
+    passwordController.text = '124578';
+  }
+
+  @override
+  void onClose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.onClose();
+  }
+}
