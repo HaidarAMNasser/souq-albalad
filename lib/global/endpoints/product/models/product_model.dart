@@ -1,44 +1,46 @@
 class ProductModel {
   int? id;
-  int? added_by;
-  int? category_id;
-  int? sub_category_id;
+  int? addedBy;
+  int? categoryId;
+  int? subCategoryId;
   String? price;
   int? views;
-  int? favorites_number;
-  int? is_featured;
-  String? price_type;
+  int? favoritesNumber;
+  int? isFeatured;
+  String? priceType;
   String? state;
   String? title;
   String? governorate;
-  String? address_details;
+  String? addressDetails;
+  double? longtitude;
+  double? latitude;
   String? description;
-  String? phone_number;
+  String? phoneNumber;
   String? email;
-  String? created_at;
-  String? updated_at;
-  dynamic final_price;
+  String? createdAt;
+  String? updatedAt;
+  dynamic finalPrice;
 
   ProductModel({
     this.id,
-    this.added_by,
-    this.category_id,
-    this.sub_category_id,
+    this.addedBy,
+    this.categoryId,
+    this.subCategoryId,
     this.price,
     this.views,
-    this.favorites_number,
-    this.is_featured,
-    this.price_type,
+    this.favoritesNumber,
+    this.isFeatured,
+    this.priceType,
     this.state,
     this.title,
     this.governorate,
-    this.address_details,
+    this.addressDetails,
     this.description,
-    this.phone_number,
+    this.phoneNumber,
     this.email,
-    this.created_at,
-    this.updated_at,
-    this.final_price,
+    this.createdAt,
+    this.updatedAt,
+    this.finalPrice,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
@@ -47,68 +49,68 @@ class ProductModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['added_by'] = added_by;
-    data['category_id'] = category_id;
-    data['sub_category_id'] = sub_category_id;
+    data['added_by'] = addedBy;
+    data['category_id'] = categoryId;
+    data['sub_category_id'] = subCategoryId;
     data['price'] = price;
     data['views'] = views;
-    data['favorites_number'] = favorites_number;
-    data['is_featured'] = is_featured;
-    data['price_type'] = price_type;
+    data['favorites_number'] = favoritesNumber;
+    data['is_featured'] = isFeatured;
+    data['price_type'] = priceType;
     data['state'] = state;
     data['title'] = title;
     data['governorate'] = governorate;
-    data['address_details'] = address_details;
+    data['address_details'] = addressDetails;
     data['description'] = description;
-    data['phone_number'] = phone_number;
+    data['phone_number'] = phoneNumber;
     data['email'] = email;
-    data['created_at'] = created_at;
-    data['updated_at'] = updated_at;
-    data['final_price'] = final_price;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['final_price'] = finalPrice;
     return data;
   }
 
   factory ProductModel.fromMap(Map<String, dynamic> json) => ProductModel(
         id: json['id'],
-        added_by: json['added_by'],
-        category_id: json['category_id'],
-        sub_category_id: json['sub_category_id'],
+        addedBy: json['added_by'],
+        categoryId: json['category_id'],
+        subCategoryId: json['sub_category_id'],
         price: json['price'],
         views: json['views'],
-        favorites_number: json['favorites_number'],
-        is_featured: json['is_featured'],
-        price_type: json['price_type'],
+        favoritesNumber: json['favorites_number'],
+        isFeatured: json['is_featured'],
+        priceType: json['price_type'],
         state: json['state'],
         title: json['title'],
         governorate: json['governorate'],
-        address_details: json['address_details'],
+        addressDetails: json['address_details'],
         description: json['description'],
-        phone_number: json['phone_number'],
+        phoneNumber: json['phone_number'],
         email: json['email'],
-        created_at: json['created_at'],
-        updated_at: json['updated_at'],
-        final_price: json['final_price'],
+        createdAt: json['created_at'],
+        updatedAt: json['updated_at'],
+        finalPrice: json['final_price'],
       );
 
   Map<String, dynamic> toMap() => {
         'id': id,
-        'added_by': added_by,
-        'category_id': category_id,
-        'sub_category_id': sub_category_id,
+        'added_by': addedBy,
+        'category_id': categoryId,
+        'sub_category_id': subCategoryId,
         'price': price,
         'views': views,
-        'favorites_number': favorites_number,
-        'is_featured': is_featured,
-        'price_type': price_type,
+        'favorites_number': favoritesNumber,
+        'is_featured': isFeatured,
+        'price_type': priceType,
         'state': state,
         'title': title,
         'governorate': governorate,
-        'address_details': address_details,
+        'address_details': addressDetails,
         'description': description,
-        'phone_number': phone_number,
+        'phone_number': phoneNumber,
         'email': email,
-        'created_at': created_at,
-        'updated_at': updated_at,
-        'final_price': final_price,
+        'created_at': createdAt,
+        'updated_at': updatedAt,
+        'final_price': finalPrice,
       };
 }

@@ -363,7 +363,7 @@
   "messages": "رسائل",
   "active_ads": "إعلانات نشطة",
   "views": "مشاهدات",
-  "edit_account_store_info": "تعديل معلومات الحساب والمتجر",
+  "edit_store_info": "تعديل معلومات المتجر",
   "upgrade": "ترقية",
   "settings": "الإعدادات",
   "dark_light_mode": "الوضع الليلي / النهاري",
@@ -405,5 +405,18 @@
   "favorite": "المفضلة",
   "remove": "إزالة",
   "the_messages": "الرسائل",
-  "write_a_message": "اكتب رسالة"
+  "write_a_message": "اكتب رسالة",
+  "welcome_to_souq_al_balad": "أهلا بكم في سوق البلد",
+  "cover_image": "صورة الغلاف",
+  "on": "على",
+  "no_data_found": "لم يتم العثور على أي بيانات",
+  "jobs": "وظائف",
+  "services": "خدمات",
+  "filter": "فلتر",
+  "min_price": "أقل سعر",
+  "max_price": "أعلى سعر",
+  "apply": "تم",
+  "category": "الفئة",
+  "sub_category": "الفئة الفرعية",
+  "you_need_to_become_seller": "يجب عليك أن تصبح بائعًا"
 }

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class CategoryShimmerGrid extends StatelessWidget {
+
   const CategoryShimmerGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
-    //return CircularProgressIndicator();
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 6,

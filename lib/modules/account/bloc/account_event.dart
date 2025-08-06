@@ -56,3 +56,22 @@ class EditUserProfileEvent extends AccountEvents {
 
   EditUserProfileEvent(this.user, this.context, this.formKey);
 }
+
+class UpdateUserToSellerEvent extends AccountEvents {
+  SignUpMerchantModel user;
+  GlobalKey<FormState> formKey;
+  BuildContext context;
+
+  UpdateUserToSellerEvent(this.user, this.context, this.formKey);
+}
+
+class GetSellerProductsEvent extends AccountEvents {
+  BuildContext context;
+  GetSellerProductsEvent(this.context);
+}
+
+class DeleteSellerProductEvent extends AccountEvents {
+  int productId;
+  BuildContext context;
+  DeleteSellerProductEvent(this.productId,this.context);
+}

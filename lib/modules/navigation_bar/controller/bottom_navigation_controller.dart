@@ -1,5 +1,12 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:souq_al_balad/global/components/button_app.dart';
+import 'package:souq_al_balad/global/components/show_dialog_app.dart';
+import 'package:souq_al_balad/global/data/local/cache_helper.dart';
 import 'package:souq_al_balad/global/endpoints/categories/models/category_model.dart';
 import 'package:souq_al_balad/global/endpoints/categories/models/sub_category_model.dart';
+import 'package:souq_al_balad/global/localization/app_localization.dart';
+import 'package:souq_al_balad/global/utils/key_shared.dart';
+import 'package:souq_al_balad/modules/account/view/screen/upgrade_to_merchant_screen.dart';
 import 'package:souq_al_balad/modules/add-ad/ui/add_ad_screen.dart';
 import 'package:souq_al_balad/modules/account/view/screen/account_screen.dart';
 import 'package:souq_al_balad/modules/favorites/view/screen/favorites_screen.dart';
@@ -127,6 +134,7 @@ class BottomNavigationController extends GetxController
 
   Future<void> changeTab(
     int index, {
+    required BuildContext context,
     List<CategoryModel>? categories,
     List<SubCategoryModel>? subCategories,
     int? selectedIndex,
@@ -134,7 +142,7 @@ class BottomNavigationController extends GetxController
     if (index == currentIndex.value) return;
 
     if (index == 2) {
-      _handleAddAction();
+      _handleAddAction(context);
       return;
     }
 
@@ -172,9 +180,47 @@ class BottomNavigationController extends GetxController
     });
   }
 
-  void _handleAddAction() {
-    print('إضافة منتج جديد');
-    Get.to(() => AddAdScreen());
+  void _handleAddAction(BuildContext context) {
+    if(CacheHelper.getData(key: accountType) != "customer") {
+      Get.to(() => AddAdScreen());
+    } else {
+      showAnimatedDialog(
+        context,
+        Center(
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(20.r),
+            child: Container(
+              width: 1.sw * 0.9,
+              height: 160.h,
+              padding: EdgeInsets.symmetric(horizontal: 30.w,vertical: 20.h),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.r),
+                color: Theme.of(context).scaffoldBackgroundColor
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    AppLocalization.of(context).translate("you_need_to_become_seller"),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Montserrat',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.h),
+                  CustomButton(
+                      text: AppLocalization.of(context).translate("upgrade"),
+                      onPressed: () => Get.to(() => UpgradeToMerchantScreen())
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+        dismissible: true,
+      );
+    }
   }
 
   void _handleTabSpecificActions(int index) {
@@ -248,30 +294,30 @@ class BottomNavigationController extends GetxController
     return navItems[currentIndex.value].activeColor;
   }
 
-  void goToTab(int index) {
+  void goToTab(int index,BuildContext context) {
     if (index >= 0 && index < navItems.length && index != 2) {
-      changeTab(index);
+      changeTab(index,context: context);
     }
   }
 
-  void goToHome() {
-    goToTab(0);
+  void goToHome(BuildContext context) {
+    goToTab(0,context);
   }
 
-  void goToFavorites() {
-    goToTab(1);
+  void goToFavorites(BuildContext context) {
+    goToTab(1,context);
   }
 
-  void goToAddAd() {
-    goToTab(2);
+  void goToAddAd(BuildContext context) {
+    goToTab(2,context);
   }
 
-  void goToCategories() {
-    goToTab(3);
+  void goToCategories(BuildContext context) {
+    goToTab(3,context);
   }
 
-  void goToProfile() {
-    goToTab(4);
+  void goToProfile(BuildContext context) {
+    goToTab(4,context);
   }
 }
 

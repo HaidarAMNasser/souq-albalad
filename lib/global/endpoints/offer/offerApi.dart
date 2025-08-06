@@ -3,16 +3,12 @@ import 'package:souq_al_balad/global/endpoints/core/enum/http_enum.dart';
 import 'package:souq_al_balad/global/endpoints/models/message_model.dart';
 import 'package:souq_al_balad/global/endpoints/models/result_class.dart';
 
-class SearchByLocationApi {
-  Future<ResponseState<MessageModel>> searchByLocation(
-    int distance,
-    double latitude,
-    double longitude,
-  ) async {
+class OfferApi {
+
+  Future<ResponseState<MessageModel>> getOffers() async {
     return API().apiMethod(
-      'search/byLocation',
-      httpEnum: HttpEnum.post,
-      data: {"distance": distance, "lat": latitude, "long": longitude},
+      'offers',
+      httpEnum: HttpEnum.get,
       parseJson: (json) => MessageModel.fromJson(json),
     );
   }

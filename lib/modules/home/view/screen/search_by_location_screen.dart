@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:souq_al_balad/global/components/app_loader.dart';
 import 'package:souq_al_balad/global/components/button_app.dart';
 import 'package:souq_al_balad/global/endpoints/core/enum/state_enum.dart';
@@ -11,16 +12,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_place/google_place.dart'; // ADD THIS
+import 'package:google_place/google_place.dart';
+import 'package:get/get.dart';
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+
+class SearchByLocationScreen extends StatefulWidget {
+
+  const SearchByLocationScreen({super.key});
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  State<SearchByLocationScreen> createState() => _SearchByLocationScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchByLocationScreenState extends State<SearchByLocationScreen> {
+
   GoogleMapController? _mapController;
   double _radius = 0.5;
   LatLng? _center;
@@ -99,15 +104,45 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
+  Future<void> _fitCircleBounds() async {
+    if (_center == null || _mapController == null) return;
+
+    const earthRadius = 6371000.0; /// radius in meters
+    final lat = _center!.latitude;
+    final lng = _center!.longitude;
+
+    final latOffset = (_radius * 1000 / earthRadius) * (180 / 3.141592653589793);
+    final lngOffset = latOffset / cos(lat * 3.141592653589793 / 180);
+
+    final southwest = LatLng(lat - latOffset, lng - lngOffset);
+    final northeast = LatLng(lat + latOffset, lng + lngOffset);
+
+    final bounds = LatLngBounds(southwest: southwest, northeast: northeast);
+
+    await _mapController!.animateCamera(
+      CameraUpdate.newLatLngBounds(bounds, 100),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => HomeBloc(),
-      child:
-          _center == null
+      child: _center == null
               ? Scaffold(body: Center(child: AppLoader(size: 30)))
               : Scaffold(
-                appBar: AppBar(),
+                appBar: AppBar(
+                  leading: InkWell(
+                    onTap: () => Get.back(),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25.w),
+                      child: const Icon(Icons.arrow_back_outlined),
+                    ),
+                  ),
+                  foregroundColor: AppColors.primary2,
+                  centerTitle: true,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                ),
                 body: SafeArea(
                   child: Stack(
                     children: [
@@ -116,9 +151,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           target: _center!,
                           zoom: 15,
                         ),
+                        compassEnabled: true,
                         myLocationEnabled: true,
                         myLocationButtonEnabled: true,
                         zoomControlsEnabled: false,
+                        padding: EdgeInsets.only(top: 80.h,left: 15.w,right: 15.w),
                         onMapCreated: (controller) {
                           _mapController = controller;
                           _mapController!.animateCamera(
@@ -152,7 +189,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         },
                       ),
                       Positioned(
-                        top: 30,
+                        top: 20,
                         left: 25,
                         right: 25,
                         child: Column(
@@ -263,9 +300,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                     inactiveColor: AppColors.grey300,
                                     min: 0.5,
                                     max: 100.0,
-                                    onChanged:
-                                        (value) =>
-                                            setState(() => _radius = value),
+                                    onChanged: (value) async {
+                                      setState(() => _radius = value);
+                                      await _fitCircleBounds();
+                                    },
                                   ),
                                 ],
                               ),
@@ -280,13 +318,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                   onPressed: () {
                                     BlocProvider.of<HomeBloc>(context).add(
                                       GetProductsByLocationEvent(
-                                        500,
-                                        36.218760,
-                                        33.525022,
-                                        // todo enable them later
-                                        // (_radius * 1000).toInt(),
-                                        // _center!.longitude,
-                                        // _center!.latitude,
+                                        (_radius * 1000).toInt(),
+                                        _center!.latitude,
+                                        _center!.longitude,
                                         context,
                                       ),
                                     );

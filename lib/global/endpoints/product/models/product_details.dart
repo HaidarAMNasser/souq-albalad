@@ -13,7 +13,7 @@ class ProductDetailsModel {
   String? camera;
   String? storage;
   String? color;
-  String? supportsSim;
+  int? supportsSim;
   String? operationSystem;
   String? screenCard;
   String? ram;

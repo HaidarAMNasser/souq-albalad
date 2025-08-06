@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:souq_al_balad/global/data/local/cache_helper.dart';
 import 'package:souq_al_balad/global/endpoints/change_password/changePasswordApi.dart';
-import 'package:souq_al_balad/global/endpoints/core/enum/state_enum.dart'
-    show StateEnum;
+import 'package:souq_al_balad/global/endpoints/core/enum/state_enum.dart' show StateEnum;
 import 'package:souq_al_balad/global/endpoints/logout/logoutApi.dart';
 import 'package:souq_al_balad/global/endpoints/models/message_model.dart';
 import 'package:souq_al_balad/global/endpoints/models/result_class.dart';
+import 'package:souq_al_balad/global/endpoints/product/models/product_bundle.dart';
 import 'package:souq_al_balad/global/endpoints/seller/models/seller_model.dart';
 import 'package:souq_al_balad/global/endpoints/seller/sellerApi.dart';
 import 'package:souq_al_balad/global/endpoints/user/models/user_model.dart';
@@ -27,6 +27,9 @@ class AccountBloc extends Bloc<AccountEvents, AccountState> {
     on<EditSellerProfileEvent>(_editSellerProfileEvent);
     on<GetUserProfileEvent>(_getUserProfileEvent);
     on<EditUserProfileEvent>(_editUserProfileEvent);
+    on<UpdateUserToSellerEvent>(_updateUserToSellerEvent);
+    on<GetSellerProductsEvent>(_getSellerProductsEvent);
+    on<DeleteSellerProductEvent>(_deleteSellerProductEvent);
   }
 
   void _logoutEvent(AccountEvents event, Emitter<AccountState> emit) async {
@@ -51,10 +54,7 @@ class AccountBloc extends Bloc<AccountEvents, AccountState> {
     }
   }
 
-  void _changePasswordEvent(
-    ChangePasswordEvent event,
-    Emitter<AccountState> emit,
-  ) async {
+  void _changePasswordEvent(ChangePasswordEvent event, Emitter<AccountState> emit,) async {
     emit(state.copyWith(changePassState: StateEnum.loading));
     ResponseState<MessageModel> response = await ChangePasswordApi()
         .changePassword(
@@ -83,10 +83,7 @@ class AccountBloc extends Bloc<AccountEvents, AccountState> {
     }
   }
 
-  void _getSellerProfileEvent(
-    GetSellerProfileEvent event,
-    Emitter<AccountState> emit,
-  ) async {
+  void _getSellerProfileEvent(GetSellerProfileEvent event, Emitter<AccountState> emit) async {
     emit(state.copyWith(sellerProfileState: StateEnum.loading));
     ResponseState<MessageModel> response = await SellerApi().getSellerProfile();
     if (response is SuccessState) {
@@ -123,10 +120,7 @@ class AccountBloc extends Bloc<AccountEvents, AccountState> {
     );
   }
 
-  void _editSellerProfileEvent(
-    EditSellerProfileEvent event,
-    Emitter<AccountState> emit,
-  ) async {
+  void _editSellerProfileEvent(EditSellerProfileEvent event, Emitter<AccountState> emit) async {
     emit(state.copyWith(editSellerProfileState: StateEnum.loading));
     final response = await SellerApi().editSellerProfile(event.seller);
     if (response is SuccessState) {
@@ -159,10 +153,7 @@ class AccountBloc extends Bloc<AccountEvents, AccountState> {
     }
   }
 
-  void _getUserProfileEvent(
-    GetUserProfileEvent event,
-    Emitter<AccountState> emit,
-  ) async {
+  void _getUserProfileEvent(GetUserProfileEvent event, Emitter<AccountState> emit) async {
     emit(state.copyWith(userProfileState: StateEnum.loading));
     ResponseState<MessageModel> response = await UserApi().getUserProfile();
     if (response is SuccessState) {
@@ -188,10 +179,7 @@ class AccountBloc extends Bloc<AccountEvents, AccountState> {
     }
   }
 
-  void _editUserProfileEvent(
-    EditUserProfileEvent event,
-    Emitter<AccountState> emit,
-  ) async {
+  void _editUserProfileEvent(EditUserProfileEvent event, Emitter<AccountState> emit) async {
     emit(state.copyWith(editUserProfileState: StateEnum.loading));
     final response = await UserApi().editUserProfile(event.user);
     if (response is SuccessState) {
@@ -216,6 +204,90 @@ class AccountBloc extends Bloc<AccountEvents, AccountState> {
       final res = response as ErrorState<MessageModel>;
       Fluttertoast.showToast(msg: res.errorMessage.error?.message ?? 'Error');
       emit(state.copyWith(editUserProfileState: StateEnum.start));
+    }
+  }
+
+  void _updateUserToSellerEvent(UpdateUserToSellerEvent event, Emitter<AccountState> emit) async {
+    emit(state.copyWith(updateUserToSellerState: StateEnum.loading));
+    final response = await UserApi().updateUserToSeller(event.user);
+    if (response is SuccessState) {
+      final res = response as SuccessState<MessageModel>;
+      if (res.data.success) {
+        final userModel = UserModel.fromJson(res.data.result["user"]);
+        emit(
+          state.copyWith(user: userModel, updateUserToSellerState: StateEnum.end),
+        );
+        await Future.delayed(const Duration(milliseconds: 100));
+        await CacheHelper.removeData(key: 'token').then((value) {
+          CacheHelper.removeData(key: accountType);
+          Get.offAll(() => const LoginScreen());
+        });
+        emit(state.copyWith(updateUserToSellerState: StateEnum.start));
+      } else {
+        Fluttertoast.showToast(msg: res.data.message);
+        emit(
+          state.copyWith(
+            errorMessage: res.data.message,
+            updateUserToSellerState: StateEnum.start,
+          ),
+        );
+      }
+    } else if (response is ErrorState) {
+      final res = response as ErrorState<MessageModel>;
+      Fluttertoast.showToast(msg: res.errorMessage.error?.message ?? 'Error');
+      emit(state.copyWith(updateUserToSellerState: StateEnum.start));
+    }
+  }
+
+  void _getSellerProductsEvent(GetSellerProductsEvent event, Emitter<AccountState> emit) async {
+    emit(state.copyWith(sellerProductsState: StateEnum.loading));
+    ResponseState<MessageModel> response = await SellerApi().getSellerProducts();
+    if (response is SuccessState) {
+      SuccessState<MessageModel> res = response as SuccessState<MessageModel>;
+      if (res.data.success) {
+        List<ProductBundleModel> products = [];
+        for (var i = 0; i < res.data.result['products'].length; i++) {
+          ProductBundleModel product = ProductBundleModel.fromJson(
+            res.data.result['products'][i],
+          );
+          products.add(product);
+        }
+        emit(state.copyWith(sellerProductsState: StateEnum.Success, sellerProducts: products));
+      } else {
+        emit(
+          state.copyWith(
+            errorMessage: res.data.message,
+            sellerProductsState: StateEnum.start,
+          ),
+        );
+        Fluttertoast.showToast(msg: res.data.message);
+      }
+    } else if (response is ErrorState) {
+      ErrorState<MessageModel> res = response as ErrorState<MessageModel>;
+      Fluttertoast.showToast(msg: res.errorMessage.error!.message);
+      emit(state.copyWith(sellerProductsState: StateEnum.start));
+    }
+  }
+
+  void _deleteSellerProductEvent(DeleteSellerProductEvent event, Emitter<AccountState> emit) async {
+    emit(state.copyWith(deleteSellerProductState: StateEnum.loading,productId: event.productId));
+    ResponseState<MessageModel> response = await SellerApi().deleteProduct(event.productId);
+    if (response is SuccessState) {
+      SuccessState<MessageModel> res = response as SuccessState<MessageModel>;
+      if (res.data.success) {
+        Get.back();
+        add(GetSellerProductsEvent(event.context));
+        emit(state.copyWith(deleteSellerProductState: StateEnum.start));
+      } else {
+        emit(
+          state.copyWith(errorMessage: res.data.message,deleteSellerProductState: StateEnum.start,productId: null),
+        );
+        Fluttertoast.showToast(msg: res.data.message);
+      }
+    } else if (response is ErrorState) {
+      ErrorState<MessageModel> res = response as ErrorState<MessageModel>;
+      Fluttertoast.showToast(msg: res.errorMessage.error!.message);
+      emit(state.copyWith(deleteSellerProductState: StateEnum.start,productId: null));
     }
   }
 }

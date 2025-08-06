@@ -363,7 +363,7 @@
   "messages": "Mesajlar",
   "active_ads": "Aktif ilanlar",
   "views": "Görüntülenme",
-  "edit_account_store_info": "Hesap ve mağaza bilgilerini düzenle",
+  "edit_store_info": "Mağaza bilgilerini düzenle",
   "upgrade": "Yükselt",
   "settings": "Ayarlar",
   "dark_light_mode": "Koyu / Açık mod",
@@ -403,5 +403,18 @@
   "new_password": "Yeni şifre",
   "location_not_found": "Konum belirlenemedi, lütfen tekrar deneyin.",
   "favorite": "Favoriler",
-  "remove": "Kaldır"
+  "remove": "Kaldır",
+  "welcome_to_souq_al_balad": "Souq Al Balad'a Hoş Geldiniz",
+  "cover_image": "kapak resmi",
+  "on": "Açık",
+  "no_data_found": "veri bulunamadı",
+  "jobs": "İşler",
+  "services": "Hizmetler",
+  "filter": "Filtrele",
+  "min_price": "En düşük fiyat",
+  "max_price": "En yüksek fiyat",
+  "apply": "Uygula",
+  "category": "Kategori",
+  "sub_category": "Alt kategori",
+  "you_need_to_become_seller": "Satıcı olmalısınız"
 }

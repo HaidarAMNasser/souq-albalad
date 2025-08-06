@@ -363,7 +363,7 @@
   "messages": "Nachrichten",
   "active_ads": "Aktive Anzeigen",
   "views": "Aufrufe",
-  "edit_account_store_info": "Konto‑ & Shopinfos bearbeiten",
+  "edit_store_info": "Shop-Informationen bearbeiten",
   "upgrade": "Upgrade",
   "settings": "Einstellungen",
   "dark_light_mode": "Dunkel-/Hellmodus",
@@ -403,5 +403,18 @@
   "new_password": "Neues Passwort",
   "location_not_found": "Der Standort konnte nicht bestimmt werden. Bitte versuchen Sie es erneut.",
   "favorite": "Favoriten",
-  "remove": "Entfernen"
+  "remove": "Entfernen",
+  "welcome_to_souq_al_balad": "Willkommen im Souq Al Balad",
+  "cover_image": "Titelbild",
+  "on": "auf",
+  "no_data_found": "keine Daten gefunden",
+  "jobs": "Jobs",
+  "services": "Dienstleistungen",
+  "filter": "Filter",
+  "min_price": "Mindestpreis",
+  "max_price": "Höchstpreis",
+  "apply": "Anwenden",
+  "category": "Kategorie",
+  "sub_category": "Unterkategorie",
+  "you_need_to_become_seller": "Sie müssen Verkäufer werden."
 }

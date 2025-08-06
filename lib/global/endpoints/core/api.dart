@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:souq_al_balad/global/utils/key_shared.dart';
 
 abstract class BaseUrlHandler {
   final String baseUrl = '';
@@ -33,6 +34,8 @@ class API implements BaseUrlHandler {
           options.headers['Content-Type'] = 'application/json';
           options.headers['Accept'] = 'application/json';
           options.headers['connection'] = 'keep-alive';
+          final lang = CacheHelper.getData(key: HEADERLANGUAGEKEY) ?? 'en';
+          options.headers['Accept-Language'] = lang;
           handler.next(options);
         },
       ),

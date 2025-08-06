@@ -53,7 +53,7 @@ class UserModel {
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
       deletedAt: json['deleted_at'],
-      logoPathFromServer: json['logo'],
+      logoPathFromServer: json['profile_image'],
     );
   }
 
@@ -73,9 +73,6 @@ class UserModel {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['deleted_at'] = deletedAt;
-    if (logo == null && logoPathFromServer != null) {
-      data["logo"] = logoPathFromServer;
-    }
     return data;
   }
 }
