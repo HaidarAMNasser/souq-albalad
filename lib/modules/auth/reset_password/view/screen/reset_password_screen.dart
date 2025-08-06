@@ -82,7 +82,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     controller: confirmPasswordController,
                     hintText: AppLocalization.of(
                       context,
-                    ).translate("reset_password"),
+                    ).translate("confirm_password"),
                     prefixIcon: Icons.lock_outline,
                     isPassword: true,
                     validator: (value) {
@@ -111,18 +111,20 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         ).translate("reset_password"),
                         // todo remove later
                         onPressed: () {
-                          BlocProvider.of<ResetPasswordBloc>(context).add(
-                            ResetPasswordEvent(
-                              ResetPasswordModel(
-                                email: widget.email,
-                                token: widget.token,
-                                password: passwordController.text,
-                                password_confirmation:
-                                    confirmPasswordController.text,
+                          if (formKey.currentState!.validate()) {
+                            BlocProvider.of<ResetPasswordBloc>(context).add(
+                              ResetPasswordEvent(
+                                ResetPasswordModel(
+                                  email: widget.email,
+                                  token: widget.token,
+                                  password: passwordController.text,
+                                  password_confirmation:
+                                  confirmPasswordController.text,
+                                ),
+                                context,
                               ),
-                              context,
-                            ),
-                          );
+                            );
+                          }
                         },
                         isLoading:
                             state.resetPasswordState == StateEnum.loading,

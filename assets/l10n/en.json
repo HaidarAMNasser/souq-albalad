@@ -26,6 +26,7 @@
   "description": "Description",
   "phone_number": "Phone number",
   "reset_password": "Reset password",
+  "confirm_password": "Confirm password",
   "name": "Name",
   "age": "Age",
   "phone_email": "Email or Phone Number",
@@ -418,5 +419,6 @@
   "apply": "Apply",
   "category": "Category",
   "sub_category": "Sub category",
-  "you_need_to_become_seller": "You need to become a seller"
+  "you_need_to_become_seller": "You need to become a seller",
+  "please_select_logo": "Please select logo"
 }

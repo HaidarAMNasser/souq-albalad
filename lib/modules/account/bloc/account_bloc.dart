@@ -129,6 +129,7 @@ class AccountBloc extends Bloc<AccountEvents, AccountState> {
         final sellerInfoModel = SellerInfoModel.fromJson(
           res.data.result["seller"],
         );
+        Get.back(result: true);
         emit(
           state.copyWith(
             seller: sellerInfoModel,
@@ -186,6 +187,7 @@ class AccountBloc extends Bloc<AccountEvents, AccountState> {
       final res = response as SuccessState<MessageModel>;
       if (res.data.success) {
         final userModel = UserModel.fromJson(res.data.result["user"]);
+        Get.back(result: true);
         emit(
           state.copyWith(user: userModel, editUserProfileState: StateEnum.end),
         );

@@ -12,6 +12,7 @@ import 'package:souq_al_balad/global/utils/color_app.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:souq_al_balad/global/utils/validators/required_validator.dart';
 import 'package:souq_al_balad/modules/account/bloc/account_bloc.dart';
 import 'package:souq_al_balad/modules/account/bloc/account_event.dart';
 import 'package:souq_al_balad/modules/account/bloc/account_states.dart';
@@ -289,12 +290,25 @@ class _UpgradeToMerchantScreenState extends State<UpgradeToMerchantScreen> {
                         context,
                       ).translate("merchant_name"),
                       prefixIcon: Icons.person_outline,
+                      validator: (value) {
+                        if (!RequiredValidator().validate(value ?? '')) {
+                          return RequiredValidator().getMessage(context);
+                        }
+                        return null;
+                      },
                     ),
                     SizedBox(height: 16.h),
                     CustomTextField(
                       controller: storeNameController,
                       hintText: AppLocalization.of(context).translate("shop_name"),
                       prefixIcon: Icons.store_outlined,
+                      validator: (value) {
+                        if (!RequiredValidator().validate(value ?? '')) {
+                          return RequiredValidator().getMessage(context);
+                        }
+                        return null;
+                      },
+                      isRequired: true,
                     ),
                     SizedBox(height: 16.h),
                     CustomTextField(
@@ -302,12 +316,25 @@ class _UpgradeToMerchantScreenState extends State<UpgradeToMerchantScreen> {
                       hintText: AppLocalization.of(context).translate("phone_number"),
                       prefixIcon: Icons.phone_outlined,
                       keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (!RequiredValidator().validate(value ?? '')) {
+                          return RequiredValidator().getMessage(context);
+                        }
+                        return null;
+                      },
+                      isRequired: true,
                     ),
                     SizedBox(height: 16.h),
                     CustomTextField(
                       controller: addressController,
                       hintText: AppLocalization.of(context).translate("address"),
                       prefixIcon: Icons.location_on_outlined,
+                      validator: (value) {
+                        if (!RequiredValidator().validate(value ?? '')) {
+                          return RequiredValidator().getMessage(context);
+                        }
+                        return null;
+                      },
                     ),
                     SizedBox(height: 16.h),
                     CustomTextField(

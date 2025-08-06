@@ -32,7 +32,6 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
   final TextEditingController phoneController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   XFile? image;
-  bool didEdit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +49,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
             ),
           ),
           leading: InkWell(
-            onTap: () => Get.back(result: didEdit),
+            onTap: () => Get.back(),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.w),
               child: const Icon(Icons.arrow_back_outlined),
@@ -60,77 +59,134 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
           centerTitle: true,
           backgroundColor: Theme.of(context).colorScheme.surface,
         ),
-        body: WillPopScope(
-          onWillPop: () async {
-            Get.back(result: didEdit);
-            return false;
-          },
-          child: BlocBuilder<AccountBloc, AccountState>(
-            builder: (context, state) {
-              if (state.userProfileState == StateEnum.Success) {
-                final user = state.user!;
-                nameController.text = user.name ?? '';
-                ageController.text = user.age ?? '';
-                phoneController.text = user.phone ?? '';
-              }
+        body: BlocBuilder<AccountBloc, AccountState>(
+          builder: (context, state) {
+            if (state.userProfileState == StateEnum.Success) {
+              final user = state.user!;
+              nameController.text = user.name ?? '';
+              ageController.text = user.age ?? '';
+              phoneController.text = user.phone ?? '';
+            }
 
-              if (state.userProfileState == StateEnum.loading) {
-                return Center(child: AppLoader(size: 30.w));
-              }
-              return Form(
-                key: formKey,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: 25.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 20.h),
-                      SizedBox(
-                        width: 1.sw,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                if (state.user!.logoPathFromServer != null ||
-                                    image != null) {
-                                  showAnimatedDialog(
-                                    context,
-                                    Center(
-                                      child: Material(
-                                        color: Colors.transparent,
-                                        child: Container(
-                                          width: 1.sw,
-                                          height: 300.h,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image:
-                                                  image != null
-                                                      ? FileImage(
-                                                        File(image!.path),
-                                                      )
-                                                      : NetworkImage(
-                                                        AppUrls.imageUrl +
-                                                            state
-                                                                .user!
-                                                                .logoPathFromServer!,
-                                                      ),
-                                              fit: BoxFit.cover,
-                                            ),
+            if (state.userProfileState == StateEnum.loading) {
+              return Center(child: AppLoader(size: 30.w));
+            }
+            return Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 25.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20.h),
+                    SizedBox(
+                      width: 1.sw,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              if (state.user!.logoPathFromServer != null ||
+                                  image != null) {
+                                showAnimatedDialog(
+                                  context,
+                                  Center(
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: Container(
+                                        width: 1.sw,
+                                        height: 300.h,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image:
+                                                image != null
+                                                    ? FileImage(
+                                                      File(image!.path),
+                                                    )
+                                                    : NetworkImage(
+                                                      AppUrls.imageUrl +
+                                                          state
+                                                              .user!
+                                                              .logoPathFromServer!,
+                                                    ),
+                                            fit: BoxFit.cover,
                                           ),
                                         ),
                                       ),
                                     ),
-                                    dismissible: true,
-                                  );
-                                }
+                                  ),
+                                  dismissible: true,
+                                );
+                              }
+                            },
+                            child: Container(
+                              width: 125.w,
+                              height: 125.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isDark ?  AppColors.darkCardBackground : AppColors.lightCardBackground,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                                image: DecorationImage(
+                                  image:
+                                      image != null
+                                          ? FileImage(File(image!.path))
+                                          : NetworkImage(
+                                            state.user!.logoPathFromServer ==
+                                                    null
+                                                ? ""
+                                                : AppUrls.imageUrl +
+                                                    state
+                                                        .user!
+                                                        .logoPathFromServer!,
+                                          ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 0,
+                            right: 110.w,
+                            child: InkWell(
+                              onTap: () {
+                                showImageBottomSheet(
+                                  context,
+                                  () async {
+                                    Navigator.pop(context);
+                                    image = await ImagePicker().pickImage(
+                                      source: ImageSource.camera,
+                                    );
+                                    if (image != null) {
+                                      BlocProvider.of<AccountBloc>(
+                                        context,
+                                      ).add(SetImage(image!));
+                                    }
+                                  },
+                                  () async {
+                                    Navigator.pop(context);
+                                    image = await ImagePicker().pickImage(
+                                      source: ImageSource.gallery,
+                                    );
+                                    if (image != null) {
+                                      BlocProvider.of<AccountBloc>(
+                                        context,
+                                      ).add(SetImage(image!));
+                                    }
+                                  },
+                                );
                               },
                               child: Container(
-                                width: 125.w,
-                                height: 125.w,
+                                width: 40.w,
+                                height: 40.w,
                                 decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: isDark ?  AppColors.darkCardBackground : AppColors.lightCardBackground,
+                                  color: AppColors.lightBackground,
+                                  borderRadius: BorderRadius.circular(50.r),
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.black.withOpacity(0.1),
@@ -138,137 +194,71 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                                       offset: const Offset(0, 4),
                                     ),
                                   ],
-                                  image: DecorationImage(
-                                    image:
-                                        image != null
-                                            ? FileImage(File(image!.path))
-                                            : NetworkImage(
-                                              state.user!.logoPathFromServer ==
-                                                      null
-                                                  ? ""
-                                                  : AppUrls.imageUrl +
-                                                      state
-                                                          .user!
-                                                          .logoPathFromServer!,
-                                            ),
-                                    fit: BoxFit.cover,
-                                  ),
                                 ),
+                                child: Center(child: Icon(Icons.edit)),
                               ),
                             ),
-                            Positioned(
-                              top: 0,
-                              right: 110.w,
-                              child: InkWell(
-                                onTap: () {
-                                  showImageBottomSheet(
-                                    context,
-                                    () async {
-                                      Navigator.pop(context);
-                                      image = await ImagePicker().pickImage(
-                                        source: ImageSource.camera,
-                                      );
-                                      if (image != null) {
-                                        BlocProvider.of<AccountBloc>(
-                                          context,
-                                        ).add(SetImage(image!));
-                                      }
-                                    },
-                                    () async {
-                                      Navigator.pop(context);
-                                      image = await ImagePicker().pickImage(
-                                        source: ImageSource.gallery,
-                                      );
-                                      if (image != null) {
-                                        BlocProvider.of<AccountBloc>(
-                                          context,
-                                        ).add(SetImage(image!));
-                                      }
-                                    },
-                                  );
-                                },
-                                child: Container(
-                                  width: 40.w,
-                                  height: 40.w,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.lightBackground,
-                                    borderRadius: BorderRadius.circular(50.r),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(child: Icon(Icons.edit)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 50.h),
+                    CustomTextField(
+                      controller: nameController,
+                      hintText: AppLocalization.of(context).translate("name"),
+                      prefixIcon: Icons.person_outline,
+                    ),
+                    SizedBox(height: 16.h),
+                    CustomTextField(
+                      controller: phoneController,
+                      hintText: AppLocalization.of(
+                        context,
+                      ).translate("phone_number"),
+                      prefixIcon: Icons.phone,
+                      keyboardType: TextInputType.number,
+                    ),
+                    SizedBox(height: 16.h),
+                    CustomTextField(
+                      controller: ageController,
+                      hintText: AppLocalization.of(context).translate("age"),
+                      prefixIcon: Icons.cake_outlined,
+                      keyboardType: TextInputType.number,
+                    ),
+                    SizedBox(height: 40.h),
+                    BlocBuilder<AccountBloc, AccountState>(
+                      builder: (context, state) {
+                        return CustomButton(
+                          text: AppLocalization.of(context).translate("edit"),
+                          onPressed: () async {
+                            BlocProvider.of<AccountBloc>(context).add(
+                              EditUserProfileEvent(
+                                UserModel(
+                                  name: nameController.text,
+                                  age: ageController.text,
+                                  phone: phoneController.text,
+                                  email: state.user!.email,
+                                  logo: image,
+                                  logoPathFromServer:
+                                      image == null
+                                          ? state.user?.logoPathFromServer
+                                          : null,
                                 ),
+                                context,
+                                formKey,
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 50.h),
-                      CustomTextField(
-                        controller: nameController,
-                        hintText: AppLocalization.of(context).translate("name"),
-                        prefixIcon: Icons.person_outline,
-                      ),
-                      SizedBox(height: 16.h),
-                      CustomTextField(
-                        controller: phoneController,
-                        hintText: AppLocalization.of(
-                          context,
-                        ).translate("phone_number"),
-                        prefixIcon: Icons.phone,
-                        keyboardType: TextInputType.number,
-                      ),
-                      SizedBox(height: 16.h),
-                      CustomTextField(
-                        controller: ageController,
-                        hintText: AppLocalization.of(context).translate("age"),
-                        prefixIcon: Icons.cake_outlined,
-                        keyboardType: TextInputType.number,
-                      ),
-                      SizedBox(height: 40.h),
-                      BlocBuilder<AccountBloc, AccountState>(
-                        builder: (context, state) {
-                          return CustomButton(
-                            text: AppLocalization.of(context).translate("edit"),
-                            onPressed: () async {
-                              setState(() {
-                                didEdit = true;
-                              });
-                              BlocProvider.of<AccountBloc>(context).add(
-                                EditUserProfileEvent(
-                                  UserModel(
-                                    name: nameController.text,
-                                    age: ageController.text,
-                                    phone: phoneController.text,
-                                    email: state.user!.email,
-                                    logo: image,
-                                    logoPathFromServer:
-                                        image == null
-                                            ? state.user?.logoPathFromServer
-                                            : null,
-                                  ),
-                                  context,
-                                  formKey,
-                                ),
-                              );
-                            },
-                            isLoading:
-                                state.editUserProfileState == StateEnum.loading,
-                          );
-                        },
-                      ),
-                      SizedBox(height: 50.h),
-                    ],
-                  ),
+                            );
+                          },
+                          isLoading:
+                              state.editUserProfileState == StateEnum.loading,
+                        );
+                      },
+                    ),
+                    SizedBox(height: 50.h),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

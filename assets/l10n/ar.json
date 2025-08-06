@@ -26,6 +26,7 @@
   "description": "الوصف",
   "phone_number": "رقم الهاتف",
   "reset_password": "إعادة كلمة المرور",
+  "confirm_password": "تأكيد كلمة المرور",
   "name": "الاسم",
   "age": "العمر",
   "phone_email": "البريد الالكتروني أو رقم الهاتف",
@@ -418,5 +419,6 @@
   "apply": "تم",
   "category": "الفئة",
   "sub_category": "الفئة الفرعية",
-  "you_need_to_become_seller": "يجب عليك أن تصبح بائعًا"
+  "you_need_to_become_seller": "يجب عليك أن تصبح بائعًا",
+  "please_select_logo": "يرجى اختيار الشعار"
 }

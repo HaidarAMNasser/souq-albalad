@@ -26,6 +26,7 @@
   "description": "Açıklama",
   "phone_number": "Telefon numarası",
   "reset_password": "Şifreyi sıfırla",
+  "confirm_password": "Şifreyi Onayla",
   "name": "İsim",
   "age": "Yaş",
   "phone_email": "E‑posta veya telefon",
@@ -416,5 +417,6 @@
   "apply": "Uygula",
   "category": "Kategori",
   "sub_category": "Alt kategori",
-  "you_need_to_become_seller": "Satıcı olmalısınız"
+  "you_need_to_become_seller": "Satıcı olmalısınız",
+  "please_select_logo": "Lütfen logo seçin"
 }

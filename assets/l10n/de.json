@@ -26,6 +26,7 @@
   "description": "Beschreibung",
   "phone_number": "Telefonnummer",
   "reset_password": "Passwort zurücksetzen",
+  "confirm_password": "Passwort bestätigen",
   "name": "Name",
   "age": "Alter",
   "phone_email": "E‑Mail oder Telefonnummer",
@@ -416,5 +417,6 @@
   "apply": "Anwenden",
   "category": "Kategorie",
   "sub_category": "Unterkategorie",
-  "you_need_to_become_seller": "Sie müssen Verkäufer werden."
+  "you_need_to_become_seller": "Sie müssen Verkäufer werden",
+  "please_select_logo": "Bitte wählen Sie ein Logo aus"
 }
