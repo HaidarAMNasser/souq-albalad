@@ -26,11 +26,16 @@ class MainLayoutScreen extends StatelessWidget {
   }
 }
 
-class CustomBottomNavBar extends StatelessWidget {
+class CustomBottomNavBar extends StatefulWidget {
   final BottomNavigationController controller;
 
   const CustomBottomNavBar({super.key, required this.controller});
 
+  @override
+  State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
+}
+
+class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -49,7 +54,7 @@ class CustomBottomNavBar extends StatelessWidget {
         () => Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children:
-              controller.navItems.asMap().entries.map((entry) {
+              widget.controller.navItems.asMap().entries.map((entry) {
                 int index = entry.key;
                 BottomNavItem item = entry.value;
 
@@ -61,7 +66,7 @@ class CustomBottomNavBar extends StatelessWidget {
   }
 
   Widget _buildNavItem(BottomNavItem item, int index) {
-    bool isActive = controller.isTabActive(index);
+    bool isActive = widget.controller.isTabActive(index);
 
     // الزر الوسط (إضافة) له تصميم خاص
     if (item.isCenter) {
@@ -71,13 +76,13 @@ class CustomBottomNavBar extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         HapticFeedback.lightImpact();
-        controller.changeTab(index);
+        widget.controller.changeTab(index,context: context);
       },
       child: AnimatedBuilder(
-        animation: controller.scaleAnimations[index],
+        animation: widget.controller.scaleAnimations[index],
         builder: (context, child) {
           return Transform.scale(
-            scale: controller.scaleAnimations[index].value,
+            scale: widget.controller.scaleAnimations[index].value,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -130,13 +135,13 @@ class CustomBottomNavBar extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         HapticFeedback.mediumImpact();
-        controller.changeTab(index);
+        widget.controller.changeTab(index,context: context);
       },
       child: AnimatedBuilder(
-        animation: controller.scaleAnimations[index],
+        animation: widget.controller.scaleAnimations[index],
         builder: (context, child) {
           return Transform.scale(
-            scale: controller.scaleAnimations[index].value,
+            scale: widget.controller.scaleAnimations[index].value,
             child: Container(
               width: 60,
               height: 60,

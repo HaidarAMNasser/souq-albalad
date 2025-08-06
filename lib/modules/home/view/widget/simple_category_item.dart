@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:souq_al_balad/global/components/app_loader.dart';
 
 class SimpleCategoryItem extends StatelessWidget {
   final String title;
@@ -20,8 +21,7 @@ class SimpleCategoryItem extends StatelessWidget {
       // onTap: onTap,
       onTap: onTap,
       child: Container(
-        width: 150.h,
-        height: 200.w,
+        height: 220.w,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -35,48 +35,56 @@ class SimpleCategoryItem extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // الصورة
             Expanded(
               flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  fit: BoxFit.contain,
-                  progressIndicatorBuilder: (context, child, loadingProgress) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                  errorWidget: (context, error, stackTrace) {
-                    return Icon(
-                      Icons.image_not_supported,
-                      size: 60,
-                      color: Colors.grey[400],
-                    );
-                  },
+              child: Container(
+                width: double.infinity,
+                height: 120.h,
+                decoration: BoxDecoration(shape: BoxShape.circle),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.cover,
+                    progressIndicatorBuilder: (context, child, loadingProgress) {
+                      return const Center(child: AppLoader());
+                    },
+                    errorWidget: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.image_not_supported,
+                        size: 60,
+                        color: Colors.grey[400],
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-
-            // النص
+            SizedBox(height: 10.h),
             Expanded(
               flex: 2,
               child: Center(
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
+            SizedBox(height: 10.h),
           ],
         ),
       ),

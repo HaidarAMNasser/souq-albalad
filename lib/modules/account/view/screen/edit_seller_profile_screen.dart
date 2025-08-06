@@ -9,7 +9,6 @@ import 'package:souq_al_balad/global/endpoints/core/enum/state_enum.dart';
 import 'package:souq_al_balad/global/endpoints/signup/models/sign_up_merchant_model.dart';
 import 'package:souq_al_balad/global/localization/app_localization.dart';
 import 'package:souq_al_balad/global/utils/color_app.dart';
-import 'package:souq_al_balad/global/utils/images_file.dart';
 import 'package:souq_al_balad/modules/account/bloc/account_bloc.dart';
 import 'package:souq_al_balad/modules/account/bloc/account_event.dart';
 import 'package:souq_al_balad/modules/account/bloc/account_states.dart';
@@ -20,6 +19,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditSellerProfileScreen extends StatefulWidget {
+
   const EditSellerProfileScreen({super.key});
 
   @override
@@ -34,16 +34,18 @@ class _EditSellerProfileScreenState extends State<EditSellerProfileScreen> {
   final TextEditingController descriptionController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   XFile? image;
+  XFile? coverImage;
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return BlocProvider(
       create: (context) => AccountBloc()..add(GetSellerProfileEvent(context)),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 100,
           title: Text(
-            AppLocalization.of(context).translate("edit_account_store_info"),
+            AppLocalization.of(context).translate("edit_store_info"),
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -80,21 +82,122 @@ class _EditSellerProfileScreenState extends State<EditSellerProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 20.h),
                     Stack(
                       clipBehavior: Clip.none,
                       alignment: Alignment.center,
                       children: [
-                        Container(
-                          width: 1.sw,
-                          height: 250.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16.r),
-                            image: DecorationImage(
-                              image: AssetImage(ImagesApp.sellerProfile),
-                              fit: BoxFit.cover,
+                        Stack(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                if (state.seller!.coverImage != null ||
+                                    coverImage != null) {
+                                  showAnimatedDialog(
+                                    context,
+                                    Center(
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: Container(
+                                          width: 1.sw,
+                                          height: 300.h,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image:
+                                              coverImage != null
+                                                  ? FileImage(
+                                                File(coverImage!.path),
+                                              )
+                                                  : NetworkImage(
+                                                AppUrls.imageUrl +
+                                                    state
+                                                        .seller!
+                                                        .coverImage!,
+                                              ),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    dismissible: true,
+                                  );
+                                }
+                              },
+                              child: Container(
+                                width: 1.sw,
+                                height: 250.h,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16.r),
+                                  color: isDark ? AppColors.darkCardBackground : AppColors.lightCardBackground,
+                                  image: DecorationImage(
+                                    image: coverImage != null
+                                        ? FileImage(File(coverImage!.path))
+                                        : NetworkImage(
+                                      state.seller!.coverImage == null
+                                          ? ""
+                                          : AppUrls.imageUrl +
+                                          state.seller!.coverImage!,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: InkWell(
+                                onTap: () {
+                                  showImageBottomSheet(
+                                    context,
+                                        () async {
+                                      Navigator.pop(context);
+                                      coverImage = await ImagePicker().pickImage(
+                                        source: ImageSource.camera,
+                                      );
+                                      if (coverImage != null) {
+                                        BlocProvider.of<AccountBloc>(
+                                          context,
+                                        ).add(SetImage(coverImage!));
+                                      }
+                                    },
+                                        () async {
+                                      Navigator.pop(context);
+                                      coverImage = await ImagePicker().pickImage(
+                                        source: ImageSource.gallery,
+                                      );
+                                      if (coverImage != null) {
+                                        BlocProvider.of<AccountBloc>(
+                                          context,
+                                        ).add(SetImage(coverImage!));
+                                      }
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  width: 40.w,
+                                  height: 40.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.darkTextSecondary,
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(16.r)
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(child: Icon(Icons.edit,
+                                    color: isDark ? AppColors.lightCardBackground : AppColors.darkBackground,
+                                  )),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         Positioned(
                           left: 0,
@@ -143,13 +246,11 @@ class _EditSellerProfileScreenState extends State<EditSellerProfileScreen> {
                                   height: 125.w,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color:
-                                        Theme.of(
-                                          context,
-                                        ).scaffoldBackgroundColor,
+                                    color: isDark ? Theme.of(context).scaffoldBackgroundColor : AppColors.lightCardBackground,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
+                                        color: isDark ? Colors.white.withOpacity(0.2) :
+                                        Colors.black.withOpacity(0.1),
                                         blurRadius: 8,
                                         offset: const Offset(0, 4),
                                       ),
@@ -271,6 +372,9 @@ class _EditSellerProfileScreenState extends State<EditSellerProfileScreen> {
                                   logo: image,
                                   logoPathFromServer:
                                       image == null ? state.seller?.logo : null,
+                                  coverImage: coverImage,
+                                  coverImagePathFromServer:
+                                  coverImage == null ? state.seller?.coverImage : null,
                                   email: "",
                                   password: "",
                                   password_confirmation: "",

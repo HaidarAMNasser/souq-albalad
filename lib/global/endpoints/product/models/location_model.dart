@@ -12,7 +12,7 @@ class LocationModel {
   String? salary;
   String? jobTitle;
   String? serviceType;
-  String? image;
+  Image? image;
 
   LocationModel({
     this.id,
@@ -42,7 +42,10 @@ class LocationModel {
       salary: json['salary'],
       jobTitle: json['job_title'],
       serviceType: json['service_type'],
-      image: json['image'],
+      image:
+      json['image'] != null
+          ? Image.fromJson(json['image'])
+          : null,
     );
   }
 
@@ -59,7 +62,43 @@ class LocationModel {
     data['salary'] = salary;
     data['job_title'] = jobTitle;
     data['service_type'] = serviceType;
-    data['image'] = image;
+    if (image != null) data['image'] = image!.toJson();
     return data;
   }
 }
+
+
+class Image {
+  int? id;
+  int? productId;
+  String? image;
+  String? createdAt;
+  String? updatedAt;
+
+  Image({
+    this.id,
+    this.productId,
+    this.image,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory Image.fromJson(Map<String, dynamic> json) {
+    return Image(
+      id: json['id'],
+      productId: json['product_id'],
+      image: json['image'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'product_id': productId,
+    'image': image,
+    'created_at': createdAt,
+    'updated_at': updatedAt,
+  };
+}
+

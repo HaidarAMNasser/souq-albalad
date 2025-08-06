@@ -16,10 +16,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:io';
-
 import 'package:image_picker/image_picker.dart';
 
 class EditUserProfileScreen extends StatefulWidget {
+
   const EditUserProfileScreen({super.key});
 
   @override
@@ -35,6 +35,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return BlocProvider(
       create: (context) => AccountBloc()..add(GetUserProfileEvent(context)),
       child: Scaffold(
@@ -77,7 +78,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 20.h),
                     SizedBox(
                       width: 1.sw,
                       child: Stack(
@@ -123,8 +124,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                               height: 125.w,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
+                                color: isDark ?  AppColors.darkCardBackground : AppColors.lightCardBackground,
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.1),
@@ -229,7 +229,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                       builder: (context, state) {
                         return CustomButton(
                           text: AppLocalization.of(context).translate("edit"),
-                          onPressed: () {
+                          onPressed: () async {
                             BlocProvider.of<AccountBloc>(context).add(
                               EditUserProfileEvent(
                                 UserModel(

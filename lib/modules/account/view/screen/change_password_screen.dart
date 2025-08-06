@@ -63,7 +63,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     ).translate("old_password"),
                     prefixIcon: Icons.lock_outline,
                     isPassword: true,
-                    onChanged: (_) => formKey.currentState!.validate(),
+                    onChanged: (s) => {},
                     isRequired: true,
                     validator: (value) {
                       if (!RequiredValidator().validate(value ?? '')) {
@@ -83,7 +83,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     prefixIcon: Icons.lock_outline,
                     isPassword: true,
                     isRequired: true,
-                    onChanged: (_) => formKey.currentState!.validate(),
+                    onChanged: (s) => {},
                     validator: (value) {
                       if (!RequiredValidator().validate(value ?? '')) {
                         return RequiredValidator().getMessage(context);
@@ -98,11 +98,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     controller: confirmPasswordController,
                     hintText: AppLocalization.of(
                       context,
-                    ).translate("reset_password"),
+                    ).translate("confirm_password"),
                     prefixIcon: Icons.lock_outline,
                     isPassword: true,
                     isRequired: true,
-                    onChanged: (_) => formKey.currentState!.validate(),
+                    onChanged: (s) => {},
                     validator: (value) {
                       if (!RequiredValidator().validate(value ?? '')) {
                         return RequiredValidator().getMessage(context);

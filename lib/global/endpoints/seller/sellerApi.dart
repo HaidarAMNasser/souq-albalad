@@ -6,6 +6,7 @@ import 'package:souq_al_balad/global/endpoints/signup/models/sign_up_merchant_mo
 import 'package:dio/dio.dart';
 
 class SellerApi {
+
   Future<ResponseState<MessageModel>> getSellerProfile() async {
     return API().apiMethod(
       'seller/getProfile',
@@ -14,24 +15,38 @@ class SellerApi {
     );
   }
 
-  Future<ResponseState<MessageModel>> editSellerProfile(
-    SignUpMerchantModel profile,
-  ) async {
-    FormData formData;
+  Future<ResponseState<MessageModel>> editSellerProfile(SignUpMerchantModel profile) async {
+
+    FormData formData = FormData.fromMap(profile.toJson());
+
+    List<MapEntry<String, MultipartFile>> fileEntries = [];
 
     if (profile.logo != null) {
-      formData = FormData.fromMap(profile.toJson());
-      formData.files.add(
+      fileEntries.add(
         MapEntry(
           "logo",
           await MultipartFile.fromFile(
             profile.logo!.path,
-            filename: "logo.${profile.logo!.path.split(".").last}",
+            filename: "logo.${profile.logo!.path.split('.').last}",
           ),
         ),
       );
-    } else {
-      formData = FormData.fromMap(profile.toJson());
+    }
+
+    if (profile.coverImage != null) {
+      fileEntries.add(
+        MapEntry(
+          "cover_image",
+          await MultipartFile.fromFile(
+            profile.coverImage!.path,
+            filename: "cover_image.${profile.coverImage!.path.split('.').last}",
+          ),
+        ),
+      );
+    }
+
+    if (fileEntries.isNotEmpty) {
+      formData.files.addAll(fileEntries);
     }
 
     return API().apiMethod(
@@ -39,6 +54,22 @@ class SellerApi {
       httpEnum: HttpEnum.post,
       data: profile.toJson(),
       dataMedia: formData,
+      parseJson: (json) => MessageModel.fromJson(json),
+    );
+  }
+
+  Future<ResponseState<MessageModel>> getSellerProducts() async {
+    return API().apiMethod(
+      'products/me',
+      httpEnum: HttpEnum.get,
+      parseJson: (json) => MessageModel.fromJson(json),
+    );
+  }
+
+  Future<ResponseState<MessageModel>> deleteProduct(int productId) async {
+    return API().apiMethod(
+      'admin/products/delete?product_id=$productId}',
+      httpEnum: HttpEnum.delete,
       parseJson: (json) => MessageModel.fromJson(json),
     );
   }
