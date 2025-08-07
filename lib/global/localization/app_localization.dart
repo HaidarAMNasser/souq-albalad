@@ -26,7 +26,11 @@ class AppLocalization {
   }
 
   String translate(String key) {
-    return _localizationString![key]!;
+    final value = _localizationString?[key];
+    if (value == null) {
+      debugPrint("⚠️ Missing translation for key: $key");
+    }
+    return value ?? key;
   }
 }
 

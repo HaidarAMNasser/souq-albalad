@@ -81,4 +81,8 @@ class CacheHelper {
     }
     return savedTheme;
   }
+
+  static int getUserId() {
+    return sharedPreferences.getInt('userId') ?? -1;
+  }
 }

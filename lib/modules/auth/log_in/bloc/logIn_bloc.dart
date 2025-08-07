@@ -100,8 +100,24 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
   ) async {}
 
   Future<bool> saveData(SuccessState<MessageModel> res) async {
-    String token = res.data.result['token'];
-    CacheHelper.saveData(key: 'token', value: token);
+    final Map<String, dynamic> resultData = res.data.result;
+
+    final String token = resultData['token'];
+    await CacheHelper.saveData(key: 'token', value: token);
+
+    if (resultData.containsKey('user') &&
+        resultData['user'] is Map &&
+        resultData['user'].containsKey('id')) {
+      final int userId = resultData['user']['id'];
+
+      await CacheHelper.saveData(key: 'userId', value: userId);
+
+      print("SUCCESS: Saved userId: $userId to cache.");
+    } else {
+      print(
+          "CRITICAL ERROR: User ID could not be found in the login response.");
+    }
+
     return true;
   }
 }

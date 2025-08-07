@@ -105,7 +105,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
           const SizedBox(height: 8),
         ],
         TextFormField(
-          autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: widget.controller,
           focusNode: _focusNode,
           keyboardType: widget.keyboardType,

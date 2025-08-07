@@ -13,8 +13,6 @@ class SignUpMerchantModel {
   String password_confirmation;
   XFile? logo;
   String? logoPathFromServer;
-  XFile? coverImage;
-  String? coverImagePathFromServer;
 
   SignUpMerchantModel({
     required this.store_owner_name,
@@ -26,9 +24,7 @@ class SignUpMerchantModel {
     required this.password,
     required this.password_confirmation,
     this.logo,
-    this.logoPathFromServer,
-    this.coverImage,
-    this.coverImagePathFromServer
+    this.logoPathFromServer
   });
 
   factory SignUpMerchantModel.fromJson(Map<String, dynamic> json) =>
@@ -47,9 +43,6 @@ class SignUpMerchantModel {
     if (logo == null && logoPathFromServer != null) {
       data["logo"] = logoPathFromServer;
     }
-    if (coverImage == null && coverImagePathFromServer != null) {
-      data["cover_image"] = coverImagePathFromServer;
-    }
     return data;
   }
 
@@ -66,7 +59,6 @@ class SignUpMerchantModel {
         password: json['password'],
         password_confirmation: json['password_confirmation'],
         logoPathFromServer: json['logo'],
-        coverImagePathFromServer: json['cover_image'],
       );
 
   Map<String, dynamic> toMap() => {
@@ -80,7 +72,5 @@ class SignUpMerchantModel {
     'password_confirmation': password_confirmation,
     if (logo == null && logoPathFromServer != null)
       'logo': logoPathFromServer,
-    if (coverImage == null && coverImagePathFromServer != null)
-      'cover_image': coverImagePathFromServer,
   };
 }

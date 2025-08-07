@@ -13,7 +13,7 @@ class ProductDetailsModel {
   String? camera;
   String? storage;
   String? color;
-  int? supportsSim;
+  String? supportsSim;
   String? operationSystem;
   String? screenCard;
   String? ram;
@@ -49,25 +49,25 @@ class ProductDetailsModel {
     return ProductDetailsModel(
       id: json['id'],
       productId: json['product_id'],
-      deviceType: json['device_type'],
-      type: json['type'],
-      brand: json['brand'],
-      model: json['model'],
-      madeIn: json['made_in'],
-      yearOfManufacture: json['year_of_manufacture'],
-      screenSize: json['screen_size'],
-      warranty: json['warranty'],
-      accessories: json['accessories'],
-      camera: json['camera'],
-      storage: json['storage'],
-      color: json['color'],
-      supportsSim: json['supports_sim'],
-      operationSystem: json['operation_system'],
-      screenCard: json['screen_card'],
-      ram: json['ram'],
-      processor: json['processor'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      deviceType: json['device_type']?.toString(),
+      type: json['type']?.toString(),
+      brand: json['brand']?.toString(),
+      model: json['model']?.toString(),
+      madeIn: json['made_in']?.toString(),
+      yearOfManufacture: json['year_of_manufacture']?.toString(),
+      screenSize: json['screen_size']?.toString(),
+      warranty: json['warranty']?.toString(),
+      accessories: json['accessories']?.toString(),
+      camera: json['camera']?.toString(),
+      storage: json['storage']?.toString(),
+      color: json['color']?.toString(),
+      supportsSim: json['supports_sim']?.toString(),
+      operationSystem: json['operation_system']?.toString(),
+      screenCard: json['screen_card']?.toString(),
+      ram: json['ram']?.toString(),
+      processor: json['processor']?.toString(),
+      createdAt: json['created_at']?.toString(),
+      updatedAt: json['updated_at']?.toString(),
     );
   }
 
