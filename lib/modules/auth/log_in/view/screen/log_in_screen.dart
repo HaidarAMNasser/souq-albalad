@@ -243,8 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildCreateAccountLink() {
     return TextButton(
       onPressed: () {
-        formKey.currentState?.reset();
-        Get.offAll(() => const RegisterScreen());
+        Get.to(() => const RegisterScreen());
       },
       child: Text(
         AppLocalization.of(context).translate("create_account"),

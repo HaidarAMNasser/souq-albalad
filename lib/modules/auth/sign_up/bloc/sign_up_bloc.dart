@@ -120,11 +120,11 @@ class SignUpBloc extends Bloc<SignUpEvents, SignUpState> {
       SignUpWithGmail event, Emitter<SignUpState> emit) async {}
 */
   FutureOr<void> _setIsTrader(SetIsTrader event, Emitter<SignUpState> emit) {
+    emit(state.copyWith(isTrader: event.isTrader));
     CacheHelper.saveData(
       key: accountType,
       value: event.isTrader ? 'seller' : 'customer',
     );
-    emit(state.copyWith(isTrader: event.isTrader));
   }
 
   Future<bool> saveData(SuccessState<MessageModel> res) async {

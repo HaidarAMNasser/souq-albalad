@@ -36,7 +36,6 @@ class SellerInfoModel {
   String? phone;
   String? createdAt;
   String? updatedAt;
-  String? coverImage;
 
   SellerInfoModel({
     this.id,
@@ -51,7 +50,6 @@ class SellerInfoModel {
     this.phone,
     this.createdAt,
     this.updatedAt,
-    this.coverImage,
   });
 
   factory SellerInfoModel.fromJson(Map<String, dynamic> json) {
@@ -68,7 +66,6 @@ class SellerInfoModel {
       phone: json['phone'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
-      coverImage: json['cover_image'],
     );
   }
 
@@ -86,7 +83,6 @@ class SellerInfoModel {
     data['phone'] = phone;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
-    data['cover_image'] = coverImage;
     return data;
   }
 }

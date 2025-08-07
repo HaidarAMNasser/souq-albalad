@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:souq_al_balad/global/utils/color_app.dart';
+import 'package:intl/intl.dart';
 
 class ChatContactWidget extends StatelessWidget {
   final String contactName;
   final String lastMessage;
   final String time;
-  final String? imagePath;
   final String? imageUrl;
-  final int unreadCount;
+  final int? unreadCount;
   final VoidCallback? onTap;
 
   const ChatContactWidget({
@@ -16,15 +16,35 @@ class ChatContactWidget extends StatelessWidget {
     required this.contactName,
     required this.lastMessage,
     required this.time,
-    this.imagePath,
     this.imageUrl,
-    this.unreadCount = 0,
+    this.unreadCount,
     this.onTap,
   });
+
+  String _formatContactTime(String isoString) {
+    if (isoString.isEmpty) return '';
+    try {
+      final DateTime dateTime = DateTime.parse(isoString);
+      final DateTime now = DateTime.now();
+      final DateTime today = DateTime(now.year, now.month, now.day);
+      final DateTime yesterday = today.subtract(const Duration(days: 1));
+
+      if (dateTime.isAfter(today)) {
+        return DateFormat.jm().format(dateTime);
+      } else if (dateTime.isAfter(yesterday)) {
+        return 'Yesterday';
+      } else {
+        return DateFormat.yMd().format(dateTime);
+      }
+    } catch (e) {
+      return '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final int safeUnreadCount = unreadCount ?? 0;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -36,10 +56,9 @@ class ChatContactWidget extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color:
-                  isDark
-                      ? AppColors.darkCardBackground
-                      : AppColors.lightCardBackground,
+              color: isDark
+                  ? AppColors.darkCardBackground
+                  : AppColors.lightCardBackground,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
@@ -50,101 +69,84 @@ class ChatContactWidget extends StatelessWidget {
               ],
             ),
             child: Row(
-              textDirection: TextDirection.rtl,
               children: [
-                // صورة المستخدم
-                Container(
+                SizedBox(
                   width: 50,
                   height: 50,
-                  decoration: BoxDecoration(shape: BoxShape.circle),
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrl!,
-                    fit: BoxFit.contain,
-                    progressIndicatorBuilder: (
-                      context,
-                      child,
-                      loadingProgress,
-                    ) {
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                    errorWidget: (context, error, stackTrace) {
-                      return Icon(
-                        Icons.person,
-                        size: 30,
-                        color: Colors.grey[400],
-                      );
-                    },
+                  child: ClipOval(
+                    child: (imageUrl != null && imageUrl!.isNotEmpty)
+                        ? CachedNetworkImage(
+                            imageUrl: imageUrl!,
+                            fit: BoxFit.cover,
+                            progressIndicatorBuilder:
+                                (context, url, progress) => const Center(
+                                    child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) => const Icon(
+                                Icons.person,
+                                size: 30,
+                                color: Colors.grey),
+                          )
+                        : const Icon(Icons.person,
+                            size: 30, color: Colors.grey),
                   ),
                 ),
                 const SizedBox(width: 12),
-
-                // معلومات الدردشة
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        textDirection: TextDirection.rtl,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // اسم جهة الاتصال
-                          Text(
-                            contactName,
-                            style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color:
-                                  isDark
-                                      ? AppColors.darkTextPrimary
-                                      : AppColors.lightTextPrimary,
+                          Flexible(
+                            child: Text(
+                              contactName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary,
+                              ),
                             ),
-                            textDirection: TextDirection.rtl,
                           ),
-
-                          // الوقت
+                          const SizedBox(width: 8),
                           Text(
-                            time,
+                            _formatContactTime(time),
                             style: TextStyle(
                               fontFamily: 'Montserrat',
                               fontSize: 12,
-                              color:
-                                  isDark
-                                      ? AppColors.darkTextSecondary
-                                      : AppColors.lightTextSecondary,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 6),
                       Row(
-                        textDirection: TextDirection.rtl,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // آخر رسالة
                           Expanded(
                             child: Text(
                               lastMessage,
                               style: TextStyle(
                                 fontFamily: 'Montserrat',
                                 fontSize: 14,
-                                color:
-                                    isDark
-                                        ? AppColors.darkTextSecondary
-                                        : AppColors.lightTextSecondary,
-                                fontWeight:
-                                    unreadCount > 0
-                                        ? FontWeight.w500
-                                        : FontWeight.w400,
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
+                                fontWeight: safeUnreadCount > 0
+                                    ? FontWeight.w600 // Make bold if unread
+                                    : FontWeight.w400,
                               ),
-                              textDirection: TextDirection.rtl,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-
-                          // عدد الرسائل غير المقروءة
-                          if (unreadCount > 0) ...[
+                          if (safeUnreadCount > 0) ...[
                             const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -156,7 +158,7 @@ class ChatContactWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
-                                unreadCount.toString(),
+                                safeUnreadCount.toString(),
                                 style: const TextStyle(
                                   fontFamily: 'Montserrat',
                                   fontSize: 12,

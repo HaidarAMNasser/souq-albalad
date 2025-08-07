@@ -26,16 +26,11 @@ class MainLayoutScreen extends StatelessWidget {
   }
 }
 
-class CustomBottomNavBar extends StatefulWidget {
+class CustomBottomNavBar extends StatelessWidget {
   final BottomNavigationController controller;
 
   const CustomBottomNavBar({super.key, required this.controller});
 
-  @override
-  State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
-}
-
-class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -54,7 +49,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         () => Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children:
-              widget.controller.navItems.asMap().entries.map((entry) {
+              controller.navItems.asMap().entries.map((entry) {
                 int index = entry.key;
                 BottomNavItem item = entry.value;
 
@@ -66,7 +61,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   }
 
   Widget _buildNavItem(BottomNavItem item, int index) {
-    bool isActive = widget.controller.isTabActive(index);
+    bool isActive = controller.isTabActive(index);
 
     // الزر الوسط (إضافة) له تصميم خاص
     if (item.isCenter) {
@@ -76,13 +71,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     return GestureDetector(
       onTap: () {
         HapticFeedback.lightImpact();
-        widget.controller.changeTab(index,context: context);
+        controller.changeTab(index);
       },
       child: AnimatedBuilder(
-        animation: widget.controller.scaleAnimations[index],
+        animation: controller.scaleAnimations[index],
         builder: (context, child) {
           return Transform.scale(
-            scale: widget.controller.scaleAnimations[index].value,
+            scale: controller.scaleAnimations[index].value,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -135,13 +130,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     return GestureDetector(
       onTap: () {
         HapticFeedback.mediumImpact();
-        widget.controller.changeTab(index,context: context);
+        controller.changeTab(index);
       },
       child: AnimatedBuilder(
-        animation: widget.controller.scaleAnimations[index],
+        animation: controller.scaleAnimations[index],
         builder: (context, child) {
           return Transform.scale(
-            scale: widget.controller.scaleAnimations[index].value,
+            scale: controller.scaleAnimations[index].value,
             child: Container(
               width: 60,
               height: 60,

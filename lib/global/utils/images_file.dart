@@ -8,6 +8,8 @@ class ImagesApp {
   static String on1 = 'assets/images/on1.png';
   static String on2 = 'assets/images/on2.png';
   static String on3 = 'assets/images/on3.png';
+  static String sellerProfile = 'assets/images/seller_profile.png';
+
 
   /// icons
   static String camera = 'assets/icons/camera.svg';

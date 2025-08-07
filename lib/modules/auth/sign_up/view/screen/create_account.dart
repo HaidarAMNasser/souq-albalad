@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:souq_al_balad/global/components/button_app.dart';
 import 'package:souq_al_balad/global/components/image_pick.dart';
 import 'package:souq_al_balad/global/components/image_show.dart';
@@ -16,7 +17,6 @@ import 'package:souq_al_balad/global/utils/validators/email_validator.dart';
 import 'package:souq_al_balad/global/utils/validators/match_password_validator.dart';
 import 'package:souq_al_balad/global/utils/validators/password_validator.dart';
 import 'package:souq_al_balad/global/utils/validators/required_validator.dart';
-import 'package:souq_al_balad/modules/auth/log_in/view/screen/log_in_screen.dart';
 import 'package:souq_al_balad/modules/auth/sign_up/bloc/sign_up_bloc.dart';
 import 'package:souq_al_balad/modules/auth/sign_up/bloc/sign_up_events.dart';
 import 'package:souq_al_balad/modules/auth/sign_up/bloc/sign_up_states.dart';
@@ -106,20 +106,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               });
                               if (formKey.currentState!.validate()) {
                                 if (state.isTrader) {
-                                  if (state.image == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          AppLocalization.of(context).translate("please_select_logo"),
-                                        ),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                    setState(() {
-                                      signUpClicked = false;
-                                    });
-                                    return;
-                                  }
                                   SignUpMerchantModel
                                   signUpMerchantModel = SignUpMerchantModel(
                                     store_owner_name: ownerNameController.text,
@@ -217,7 +203,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  formKey.currentState?.reset();
                   BlocProvider.of<SignUpBloc>(context).add(SetIsTrader(false));
                 },
                 child: Container(
@@ -256,7 +241,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  formKey.currentState?.reset();
                   BlocProvider.of<SignUpBloc>(context).add(SetIsTrader(true));
                 },
                 child: Container(
@@ -366,7 +350,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             // إعادة كلمة المرور
             CustomTextField(
               controller: confirmPasswordController,
-              hintText: AppLocalization.of(context).translate("confirm_password"),
+              hintText: AppLocalization.of(context).translate("reset_password"),
               prefixIcon: Icons.lock_outline,
               isPassword: true,
               validator: (value) {
@@ -572,7 +556,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             // إعادة كلمة المرور
             CustomTextField(
               controller: traderConfirmPasswordController,
-              hintText: AppLocalization.of(context).translate("confirm_password"),
+              hintText: AppLocalization.of(context).translate("reset_password"),
               prefixIcon: Icons.lock_outline,
               isPassword: true,
               validator: (value) {
@@ -713,8 +697,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const Text(" "),
         GestureDetector(
           onTap: () {
-            formKey.currentState?.reset();
-            Get.offAll(() => const LoginScreen());
+            Get.back();
           },
           child: Text(
             AppLocalization.of(context).translate("login"),
