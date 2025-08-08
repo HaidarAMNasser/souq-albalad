@@ -23,15 +23,15 @@ class CarDetailsScreen extends StatefulWidget {
 
 class _CarDetailsScreenState extends State<CarDetailsScreen> {
   late final ProductDetailsCubit _productDetailsCubit;
-  // void _shareToWhatsApp() async {
-  //   final message = AppLocalization.of(context).translate('share_ad_message');
-  //   final url = 'https://wa.me/?text=${Uri.encodeComponent(message)}';
-  //   if (await canLaunchUrl(Uri.parse(url))) {
-  //     await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-  //   } else {
-  //     debugPrint('Could not launch $url');
-  //   }
-  // }
+  void _shareToWhatsApp() async {
+    final message = AppLocalization.of(context).translate('share_ad_message');
+    final url = 'https://wa.me/?text=${Uri.encodeComponent(message)}';
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint('Could not launch $url');
+    }
+  }
 
   @override
   void initState() {
@@ -145,10 +145,15 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
       create: (_) => ProductDetailsCubit()..fetchProductDetails(widget.id),
       child: Scaffold(
         appBar: AppBar(
-          leading: Icon(
-            Icons.arrow_back,
-            size: 24.sp,
-            color: AppColors.primary2,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              size: 24.sp,
+              color: AppColors.primary2,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
           actions: [
             IconButton(
@@ -434,69 +439,160 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
                             // // buildFeatures(context),
                             // SizedBox(height: 20.h),
                             // الوصف الكامل
-                            Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.all(12.w),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12.r),
-                                border: Border.all(color: AppColors.primary2),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalization.of(context)
-                                        .translate('description'),
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Montserrat',
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  Text(
-                                    state.productData.product.description,
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontFamily: 'Montserrat',
-                                    ),
-                                    textDirection: TextDirection.rtl,
-                                  ),
-                                  SizedBox(height: 6.h),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          isExpanded = !isExpanded;
-                                        });
-                                      },
-                                      style: ButtonStyle(
-                                        overlayColor: WidgetStateProperty.all(
-                                          Colors.transparent,
-                                        ),
-                                        splashFactory: NoSplash.splashFactory,
-                                      ),
-                                      child: Text(
-                                        isExpanded
-                                            ? AppLocalization.of(
-                                                context,
-                                              ).translate('show_less')
-                                            : AppLocalization.of(
-                                                context,
-                                              ).translate('show_more'),
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          color: AppColors.orange,
-                                          fontFamily: 'Montserrat',
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // Container(
+                            //   width: double.infinity,
+                            //   padding: EdgeInsets.all(12.w),
+                            //   decoration: BoxDecoration(
+                            //     borderRadius: BorderRadius.circular(12.r),
+                            //     border: Border.all(color: AppColors.primary2),
+                            //   ),
+                            //   child: Column(
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       Text(
+                            //         AppLocalization.of(context)
+                            //             .translate('description'),
+                            //         style: TextStyle(
+                            //           fontSize: 16.sp,
+                            //           fontWeight: FontWeight.bold,
+                            //           fontFamily: 'Montserrat',
+                            //         ),
+                            //       ),
+                            //       SizedBox(height: 8.h),
+                            //       Text(
+                            //         state.productData.product.description,
+                            //         style: TextStyle(
+                            //           fontSize: 14.sp,
+                            //           fontFamily: 'Montserrat',
+                            //         ),
+                            //         textDirection: TextDirection.rtl,
+                            //       ),
+                            //       SizedBox(height: 6.h),
+                            //       Align(
+                            //         alignment: Alignment.center,
+                            //         child: TextButton(
+                            //           onPressed: () {
+                            //             setState(() {
+                            //               isExpanded = !isExpanded;
+                            //             });
+                            //           },
+                            //           style: ButtonStyle(
+                            //             overlayColor: WidgetStateProperty.all(
+                            //               Colors.transparent,
+                            //             ),
+                            //             splashFactory: NoSplash.splashFactory,
+                            //           ),
+                            //           child: Text(
+                            //             isExpanded
+                            //                 ? AppLocalization.of(
+                            //                     context,
+                            //                   ).translate('show_less')
+                            //                 : AppLocalization.of(
+                            //                     context,
+                            //                   ).translate('show_more'),
+                            //             style: TextStyle(
+                            //               fontSize: 14.sp,
+                            //               color: AppColors.orange,
+                            //               fontFamily: 'Montserrat',
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                            Builder(builder: (context) {
+                              // --- Logic to check for text overflow ---
+                              final description =
+                                  state.productData.product.description;
+                              final style = TextStyle(
+                                  fontSize: 14.sp, fontFamily: 'Montserrat');
+                              const int maxLinesWhenCollapsed =
+                                  4; // Max lines before "Show More" appears
 
+                              // Calculate the available width for the text
+                              final screenWidth =
+                                  MediaQuery.of(context).size.width;
+                              // Padding: 16 on each side for the screen, 12 on each side for the container
+                              final textMaxWidth =
+                                  screenWidth - (16.w * 2) - (12.w * 2);
+
+                              // Use a TextPainter to determine if the text will exceed the max lines
+                              final textPainter = TextPainter(
+                                text: TextSpan(text: description, style: style),
+                                maxLines: maxLinesWhenCollapsed,
+                                textDirection: TextDirection.rtl,
+                              )..layout(maxWidth: textMaxWidth);
+
+                              final isTextOverflowing =
+                                  textPainter.didExceedMaxLines;
+                              // --- End of logic ---
+
+                              return Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.all(12.w),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  border: Border.all(color: AppColors.primary2),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalization.of(context)
+                                          .translate('description'),
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Montserrat',
+                                      ),
+                                    ),
+                                    SizedBox(height: 8.h),
+                                    Text(
+                                      description,
+                                      style: style,
+                                      maxLines: isExpanded
+                                          ? null
+                                          : maxLinesWhenCollapsed, // Dynamically set max lines
+                                      overflow: TextOverflow
+                                          .ellipsis, // Show '...' when collapsed
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                    // *** Conditionally show the button ***
+                                    if (isTextOverflowing)
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isExpanded = !isExpanded;
+                                            });
+                                          },
+                                          style: ButtonStyle(
+                                            overlayColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.transparent),
+                                            splashFactory:
+                                                NoSplash.splashFactory,
+                                          ),
+                                          child: Text(
+                                            isExpanded
+                                                ? AppLocalization.of(context)
+                                                    .translate('show_less')
+                                                : AppLocalization.of(context)
+                                                    .translate('show_more'),
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              color: AppColors.orange,
+                                              fontFamily: 'Montserrat',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              );
+                            }),
                             SizedBox(height: 20.h),
                             // صاحب الإعلان
                             InkWell(

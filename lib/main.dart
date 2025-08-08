@@ -27,11 +27,15 @@ void main() async {
   if (CacheHelper.getData(key: 'theme_mode') == null) {
     await CacheHelper.saveData(key: 'theme_mode', value: false);
   }
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.immersiveSticky,
-    overlays: [SystemUiOverlay.top],
-  );
-
+  // SystemChrome.setEnabledSystemUIMode(
+  //   SystemUiMode.immersiveSticky,
+  //   overlays: [SystemUiOverlay.top],
+  // );
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    // If you want to allow upside down, add:
+    // DeviceOrientation.portraitDown,
+  ]);
   runApp(const MyApp());
 }
 
