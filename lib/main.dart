@@ -1,8 +1,10 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:souq_al_balad/global/data/local/cache_helper.dart';
 import 'package:souq_al_balad/global/data/remote/firebase_api.dart';
 import 'package:souq_al_balad/global/localization/app_localization.dart';
 import 'package:souq_al_balad/global/themes/themes.dart';
 import 'package:souq_al_balad/global/utils/key_shared.dart';
+import 'package:souq_al_balad/modules/chat/chat_destinations/bloc/chats_dest_bloc.dart';
 import 'package:souq_al_balad/modules/splash_screen/view/screen/splash_screen_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
+import 'package:souq_al_balad/modules/stores/presentation/bloc/get_stores_cubit.dart';
 
 import 'firebase_options.dart';
 
@@ -36,7 +39,19 @@ void main() async {
     // If you want to allow upside down, add:
     // DeviceOrientation.portraitDown,
   ]);
-  runApp(const MyApp());
+    runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<StoreDetailsCubit>(
+          create: (context) => StoreDetailsCubit(),
+        ),
+        BlocProvider<ChatDestBloc>(
+          create: (context) => ChatDestBloc(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 @pragma("vm:entry-point")
