@@ -182,9 +182,8 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
                   builder: (context, ss) {
                 return IconButton(
                   onPressed: () {
-                    print((ss as StoreDetailsSuccess).storeData.user);
+                    _shareToWhatsApp();
                   },
-                  //_shareToWhatsApp,
                   icon: SvgPicture.asset(
                     ImagesApp.share,
                     width: 24.w,
@@ -334,7 +333,8 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
                                   Expanded(
                                     child: ElevatedButton.icon(
                                       onPressed: () {
-                                        launchUrl(Uri.parse("tel:0933446163"));
+                                        launchUrl(Uri.parse(
+                                            "tel:${state.productData.product.sellerPhone}"));
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.primary2,
@@ -390,8 +390,10 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
                                               ? chatState.chatDestState ==
                                                       StateEnum.loading
                                                   ? const Center(
-                                                      child:
-                                                          CircularProgressIndicator())
+                                                      child: SizedBox(
+                                                          width: 40,
+                                                          child:
+                                                              CircularProgressIndicator()))
                                                   : OutlinedButton.icon(
                                                       onPressed: () {
                                                         final UserInfo?
@@ -460,9 +462,11 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
                                                     )
                                               : storeState
                                                       is StoreDetailsLoading
-                                                  ? CircularProgressIndicator(
-                                                      color: AppColors.primary,
-                                                    )
+                                                  ? Center(
+                                                      child: SizedBox(
+                                                          width: 40,
+                                                          child:
+                                                              CircularProgressIndicator()))
                                                   : OutlinedButton.icon(
                                                       onPressed: () {
                                                         if (storeState

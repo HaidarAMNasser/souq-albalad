@@ -17,7 +17,8 @@ import 'package:souq_al_balad/modules/chat/chat_destinations/bloc/chats_dest_eve
 import 'package:souq_al_balad/modules/chat/chat_destinations/bloc/chats_dest_states.dart';
 import 'package:souq_al_balad/modules/chat/chats_page/view/screen/chats_page_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:souq_al_balad/modules/stores/presentation/bloc/get_stores_cubit.dart'; // For better image handling
+import 'package:souq_al_balad/modules/stores/presentation/bloc/get_stores_cubit.dart';
+import 'package:url_launcher/url_launcher.dart'; // For better image handling
 
 class AdOwnerScreen extends StatefulWidget {
   final int id;
@@ -102,8 +103,7 @@ class _AdOwnerScreenState extends State<AdOwnerScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     String? fullImageUrl;
-    const String YOUR_API_BASE_URL =
-        "https://your-api-domain.com"; 
+    const String YOUR_API_BASE_URL = "https://your-api-domain.com";
     if (store.user != null) {
       if (store.user!.profileImage != null &&
           store.user!.profileImage!.isNotEmpty) {
@@ -199,11 +199,8 @@ class _AdOwnerScreenState extends State<AdOwnerScreen>
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 25.h),
-
-           
                 BlocConsumer<ChatDestBloc, ChatDestState>(
                   listener: (context, chatState) {
-                
                     if (chatState.newlyCreatedChat != null) {
                       print("NAVIGATION: Chat is ready, navigating now...");
                       final int currentUserId = CacheHelper.getUserId();
@@ -219,7 +216,6 @@ class _AdOwnerScreenState extends State<AdOwnerScreen>
                     }
                   },
                   builder: (context, chatState) {
-        
                     return Row(
                       children: [
                         Expanded(
@@ -229,6 +225,7 @@ class _AdOwnerScreenState extends State<AdOwnerScreen>
                             backgroundColor: AppColors.primary,
                             textColor: Colors.white,
                             onPressed: () {
+                              launchUrl(Uri.parse("tel:${store.user?.phone}"));
                             },
                           ),
                         ),
