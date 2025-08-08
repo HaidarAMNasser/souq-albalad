@@ -38,6 +38,18 @@ class API implements BaseUrlHandler {
       ),
     );
   }
+  Future<ResponseState<Map<String, dynamic>>> socialLoginGoogle({
+    required String idToken,
+  }) {
+    const String apiUrl = 'register/social/google';
+
+    return apiMethod<Map<String, dynamic>>(
+      apiUrl,
+      httpEnum: HttpEnum.post,
+      data: {'token': idToken},
+      parseJson: (json) => json as Map<String, dynamic>,
+    );
+  }
 
   Future<ResponseState<T>> apiMethod<T>(
     String apiUrl, {
@@ -68,73 +80,67 @@ class API implements BaseUrlHandler {
       case HttpEnum.get:
         return await dio
             .get(
-              apiUrl,
-              queryParameters: queryParameters,
-              options:
-                  isCache
-                      ? cacheOptions
-                      : Options(headers: headers ?? dio.options.headers),
-            )
+          apiUrl,
+          queryParameters: queryParameters,
+          options: isCache
+              ? cacheOptions
+              : Options(headers: headers ?? dio.options.headers),
+        )
             .then((response) {
-              return ResponseState<T>.success(parseJson(response.data));
-            })
-            .catchError((error, stacktrace) {
-              return Model.catchError<T>(error, stacktrace);
-            });
+          return ResponseState<T>.success(parseJson(response.data));
+        }).catchError((error, stacktrace) {
+          return Model.catchError<T>(error, stacktrace);
+        });
 
       case HttpEnum.post:
         return await dio
             .post(
-              apiUrl,
-              data: dataMedia ?? data,
-              queryParameters: queryParameters,
-              options: Options(
-                headers: headers ?? dio.options.headers,
-                responseType: responseType,
-              ),
-            )
+          apiUrl,
+          data: dataMedia ?? data,
+          queryParameters: queryParameters,
+          options: Options(
+            headers: headers ?? dio.options.headers,
+            responseType: responseType,
+          ),
+        )
             .then((response) {
-              return ResponseState<T>.success(parseJson(response.data));
-            })
-            .catchError(
-              (error, stacktrace) => Model.catchError<T>(error, stacktrace),
-            );
+          return ResponseState<T>.success(parseJson(response.data));
+        }).catchError(
+          (error, stacktrace) => Model.catchError<T>(error, stacktrace),
+        );
       case HttpEnum.put:
         return await dio
             .put(
-              apiUrl,
-              data: dataMedia ?? data,
-              options: Options(headers: headers ?? dio.options.headers),
-            )
+          apiUrl,
+          data: dataMedia ?? data,
+          options: Options(headers: headers ?? dio.options.headers),
+        )
             .then((response) {
-              return ResponseState<T>.success(parseJson(response.data));
-            })
-            .catchError(
-              (error, stacktrace) => Model.catchError<T>(error, stacktrace),
-            );
+          return ResponseState<T>.success(parseJson(response.data));
+        }).catchError(
+          (error, stacktrace) => Model.catchError<T>(error, stacktrace),
+        );
       case HttpEnum.patch:
         return await dio
             .patch(
-              apiUrl,
-              data: dataMedia ?? data,
-              options: Options(headers: headers),
-            )
+          apiUrl,
+          data: dataMedia ?? data,
+          options: Options(headers: headers),
+        )
             .then((response) {
-              return ResponseState<T>.success(parseJson(response.data));
-            })
-            .catchError(
-              (error, stacktrace) => Model.catchError<T>(error, stacktrace),
-            );
+          return ResponseState<T>.success(parseJson(response.data));
+        }).catchError(
+          (error, stacktrace) => Model.catchError<T>(error, stacktrace),
+        );
 
       case HttpEnum.delete:
         return await dio
             .delete(apiUrl, data: data, options: Options(headers: headers))
             .then((response) {
-              return ResponseState<T>.success(parseJson(response.data));
-            })
-            .catchError(
-              (error, stacktrace) => Model.catchError<T>(error, stacktrace),
-            );
+          return ResponseState<T>.success(parseJson(response.data));
+        }).catchError(
+          (error, stacktrace) => Model.catchError<T>(error, stacktrace),
+        );
     }
   }
 

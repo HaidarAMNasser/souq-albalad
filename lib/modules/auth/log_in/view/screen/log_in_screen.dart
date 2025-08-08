@@ -1,8 +1,12 @@
-import 'package:souq_al_balad/global/components/button_app.dart';
+ import 'package:souq_al_balad/global/components/button_app.dart';
 import 'package:souq_al_balad/global/components/logo_app.dart';
 import 'package:souq_al_balad/global/components/text_bold_app.dart';
 import 'package:souq_al_balad/global/components/text_field_app.dart';
+import 'package:souq_al_balad/global/data/local/cache_helper.dart';
+import 'package:souq_al_balad/global/data/remote/google_auth_services.dart';
+import 'package:souq_al_balad/global/endpoints/core/api.dart';
 import 'package:souq_al_balad/global/endpoints/core/enum/state_enum.dart';
+import 'package:souq_al_balad/global/endpoints/models/result_class.dart';
 import 'package:souq_al_balad/global/localization/app_localization.dart';
 import 'package:souq_al_balad/global/utils/color_app.dart';
 import 'package:souq_al_balad/global/utils/images_file.dart';
@@ -266,8 +270,37 @@ class _LoginScreenState extends State<LoginScreen> {
     print('تسجيل دخول كزائر');
   }
 
-  void _handleSocialLogin(String provider) {
-    print('تسجيل دخول عبر: $provider');
+
+  void _handleSocialLogin(String provider) async {
+    if (provider == "Google") {
+      try {
+        final googleAuthService = GoogleAuthService();
+        final idToken = await googleAuthService.signInAndGetIdToken();
+
+        final api = API();
+        final response = await api.socialLoginGoogle(idToken: idToken);
+
+        if (response is SuccessState<Map<String, dynamic>>) {
+          final data = response.data;
+
+          // Save token using CacheHelper
+          await CacheHelper.saveData(key: "auth_token", value: data["token"]);
+
+          Get.offAll(() => const MainLayoutScreen());
+        } else if (response is ErrorState<Map<String, dynamic>>) {
+          throw Exception("Login failed: ${response.errorMessage}");
+        } else {
+          throw Exception("Unexpected response");
+        }
+      } catch (e) {
+        print("Google login error: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Google login failed")),
+        );
+      }
+    } else {
+      print('تسجيل دخول عبر: $provider');
+    }
   }
 
   @override
